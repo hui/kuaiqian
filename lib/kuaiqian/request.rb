@@ -6,10 +6,10 @@ require 'cgi'
 module Kuaiqian
   class Request
     GATEWAY_URL = "https://www.99bill.com/gateway/recvMerchantInfoAction.htm"
-    PARAMS = %w(inputCharset bgUrl version language signType merchantAcctId payerName payerContactType payerContact orderId orderAmount orderTime productName productNum productId productDesc ext1 ext2 payType redoFlag pid)
+    PARAMS = %w(inputCharset pageUrl bgUrl version language signType merchantAcctId payerName payerContactType payerContact orderId orderAmount orderTime productName productNum productId productDesc ext1 ext2 payType redoFlag pid)
 
     def initialize(product_name, order_id, order_time, total_fee,
-                    return_url, pay_type='00', attach=nil, payer_name='用户')
+                    return_url, page_url, pay_type='00', attach=nil, payer_name='用户')
       @bank_type = 0
       @fee_type = 1
 
@@ -20,6 +20,7 @@ module Kuaiqian
 
       @pay_type = pay_type
       @return_url = return_url
+      @page_url = page_url
       @ext1 = attach || ''
 
       @payer_name = payer_name
@@ -31,7 +32,7 @@ module Kuaiqian
 
     def input_charset; '1'; end
     def bg_url; @return_url; end
-    def page_url; ''; end
+    def page_url; @page_url; end
     def version; 'v2.0'; end
     def language; '1'; end
     def sign_type; '1'; end
