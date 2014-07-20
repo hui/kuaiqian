@@ -1,17 +1,18 @@
+# -*- coding: utf-8 -*-
+
 require 'digest/md5'
 require 'cgi'
-require 'iconv'
 
 module Kuaiqian
   class Request
     GATEWAY_URL = "https://www.99bill.com/gateway/recvMerchantInfoAction.htm"
     PARAMS = %w(inputCharset bgUrl version language signType merchantAcctId payerName payerContactType payerContact orderId orderAmount orderTime productName productNum productId productDesc ext1 ext2 payType redoFlag pid)
-    
-    def initialize(product_name, order_id, order_time, total_fee, 
+
+    def initialize(product_name, order_id, order_time, total_fee,
                     return_url, pay_type='00', attach=nil, payer_name='用户')
       @bank_type = 0
       @fee_type = 1
-      
+
       @order_id = order_id.to_s
       @total_fee = total_fee.to_i.to_s
       @order_time = order_time.strftime("%Y%m%d%H%M%S")
@@ -20,10 +21,10 @@ module Kuaiqian
       @pay_type = pay_type
       @return_url = return_url
       @ext1 = attach || ''
-      
+
       @payer_name = payer_name
     end
-    
+
     def url
       "#{GATEWAY_URL}?#{html_params}&signMsg=#{sign_msg}"
     end
@@ -58,11 +59,11 @@ module Kuaiqian
         value == '' ? nil : "#{param}=#{value}"
       end.compact.join('&')
     end
-    
+
     def sign_msg
       Digest::MD5.hexdigest(sign_params).upcase
     end
-    
+
     def html_params
       PARAMS.map do |param|
         value = send(param.underscore)
